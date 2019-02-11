@@ -234,7 +234,12 @@ class SliceExtension {
         }
 
         def getSlice2py(iceHome) {
-            return getSliceCompiler("slice2py", iceHome)
+            def os = System.properties['os.name']
+            if (os == "Mac OS X") {
+                return getSliceCompiler("slice2py", [iceHome, "libexec"].join(File.separator))
+            } else {
+                return getSliceCompiler("slice2py", iceHome)
+            }
         }
 
         def getSlice2java(iceHome) {
