@@ -236,7 +236,11 @@ class SliceExtension {
         def getSlice2py(iceHome) {
             def os = System.properties['os.name']
             if (os == "Mac OS X") {
-                return getSliceCompiler("slice2py", [iceHome, "libexec"].join(File.separator))
+                if (SliceExtension.compareVersions(_iceVersion, '3.7') >= 0) {
+                    return getSliceCompiler("slice2py", [iceHome, "libexec"].join(File.separator))
+                } else {
+                    return getSliceCompiler("slice2py", iceHome)
+                }
             } else {
                 return getSliceCompiler("slice2py", iceHome)
             }
