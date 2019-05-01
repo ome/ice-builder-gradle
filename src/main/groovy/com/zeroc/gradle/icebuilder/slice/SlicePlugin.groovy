@@ -2,34 +2,45 @@
 // Copyright (c) ZeroC, Inc. All rights reserved.
 //
 
-package com.zeroc.gradle.icebuilder.slice;
+package com.zeroc.gradle.icebuilder.slice
 
-import org.gradle.api.logging.Logging
-import org.gradle.api.NamedDomainObjectContainer
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.UnknownTaskException
+import org.gradle.api.logging.Logging
 
 class SlicePlugin implements Plugin<Project> {
     private static final def LOGGER = Logging.getLogger(SliceTask)
 
+    public static final String GROUP_SLICE = "slice"
+
     void apply(Project project) {
         project.tasks.create('compileSlice', SliceTask) {
-            group = "Slice"
+            group = GROUP_SLICE
         }
 
         // Create and install the extension object.
-        def slice = project.extensions.create("slice", SliceExtension,
-                project.container(Java),
-                project.container(Python, { name -> new Python(name, project) })
-        )
-
-        // slice.extensions.add("python", project.container(Python))
+        SliceExtension slice =
+                project.extensions.create("slice", SliceExtension, project.container(Java),
+                        project.container(Python, { name -> new Python(name, project) }),
+                        project.container(Docs, { name -> new Docs(name, project) }))
 
         slice.extensions.create("freezej", Freezej,
                 project.container(Dict), project.container(Index))
 
         slice.output = project.file("${project.buildDir}/generated-src")
+
+
+        // Configure docs tasks
+        slice.docs.configureEach { Docs docs ->
+            String taskName = "ice" + docs.name.capitalize() + "Docs"
+            project.tasks.register(taskName, DocsTask) {
+                it.group = GROUP_SLICE
+                it.outputDir = docs.outputDir
+                it.includeDirs = docs.includeDirs
+                it.sourceFiles = docs.sourceFiles
+            }
+        }
 
         if (isAndroidProject(project)) {
             project.afterEvaluate {

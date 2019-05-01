@@ -14,6 +14,8 @@ class SliceExtension {
 
     final NamedDomainObjectContainer<Python> python
 
+    final NamedDomainObjectContainer<Docs> docs
+
     private def iceHome = null
     private def iceVersion = null
     private def iceArtifactVersion = null
@@ -285,9 +287,10 @@ class SliceExtension {
         }
     }
 
-    SliceExtension(java, python) {
+    SliceExtension(java, python, docs) {
         this.java = java
         this.python = python
+        this.docs = docs
     }
 
     def java(Closure closure) {
@@ -303,6 +306,14 @@ class SliceExtension {
             python.configure(closure)
         } catch(MissingPropertyException ex) {
             python.create('default', closure)
+        }
+    }
+
+    def docs(Closure closure) {
+        try {
+            docs.configure(closure)
+        } catch(MissingPropertyException ex) {
+            docs.create('default', closure)
         }
     }
 
