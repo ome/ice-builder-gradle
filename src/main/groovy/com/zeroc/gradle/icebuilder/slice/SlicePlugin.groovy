@@ -8,6 +8,7 @@ package com.zeroc.gradle.icebuilder.slice
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logging
+import org.gradle.api.plugins.JavaPlugin
 
 class SlicePlugin implements Plugin<Project> {
     private static final def LOGGER = Logging.getLogger(SliceTask)
@@ -22,25 +23,23 @@ class SlicePlugin implements Plugin<Project> {
         // Create and install the extension object.
         SliceExtension slice =
                 project.extensions.create("slice", SliceExtension, project.container(Java),
-                        project.container(Python, { name -> new Python(name, project) }),
-                        project.container(Docs, { name -> new Docs(name, project) }))
+                        project.container(Python, { name -> new Python(name, project) }))
 
         slice.extensions.create("freezej", Freezej,
                 project.container(Dict), project.container(Index))
 
         slice.output = project.file("${project.buildDir}/generated-src")
 
-
         // Configure docs tasks
-        slice.docs.configureEach { Docs docs ->
-            String taskName = "ice" + docs.name.capitalize() + "Docs"
-            project.tasks.register(taskName, DocsTask) {
-                it.group = GROUP_SLICE
-                it.outputDir = docs.outputDir
-                it.includeDirs = docs.includeDirs
-                it.sourceFiles = docs.sourceFiles
-            }
-        }
+//        slice.docs.configureEach { Docs docs ->
+//            String taskName = "ice" + docs.name.capitalize() + "Docs"
+//            project.tasks.register(taskName, DocsTask) {
+//                it.group = GROUP_SLICE
+//                it.outputDir = docs.outputDir
+//                it.includeDirs = docs.includeDirs
+//                it.sourceFiles = docs.sourceFiles
+//            }
+//        }
 
         if (isAndroidProject(project)) {
             project.afterEvaluate {
@@ -51,11 +50,9 @@ class SlicePlugin implements Plugin<Project> {
                 }
             }
         } else {
-//            project.sourceSets.main.java.srcDir slice.output
-            project.afterEvaluate {
-                def compileJava = project.tasks.getByName("compileJava")
-                if (compileJava) {
-                    compileJava.dependsOn('compileSlice')
+            project.plugins.withType(JavaPlugin) {
+                project.tasks.named(JavaPlugin.COMPILE_JAVA_TASK_NAME).configure {
+                    it.dependsOn("compileSlice")
                 }
             }
         }

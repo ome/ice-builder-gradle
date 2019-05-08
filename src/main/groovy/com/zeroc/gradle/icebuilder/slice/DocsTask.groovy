@@ -18,6 +18,10 @@ class DocsTask extends DefaultTask {
 
     @Input
     @Optional
+    boolean debug
+
+    @Input
+    @Optional
     int index
 
     @Input
@@ -55,7 +59,7 @@ class DocsTask extends DefaultTask {
 
     @TaskAction
     void apply() {
-        List<String> cmd = ["slice2html", "-I${sliceExt.sliceDir}", "-d"]
+        List<String> cmd = ["slice2html", "-I${sliceExt.sliceDir}"]
 
         cmd.addAll(["--output-dir", String.valueOf(outputDir)])
 
@@ -81,8 +85,12 @@ class DocsTask extends DefaultTask {
         }
 
         // Add the source files
-        sourceFiles.each {
+        sourceFiles.files.each {
             cmd.add(String.valueOf(it))
+        }
+
+        if (debug) {
+            cmd.add("-d")
         }
 
         executeCommand(cmd)
