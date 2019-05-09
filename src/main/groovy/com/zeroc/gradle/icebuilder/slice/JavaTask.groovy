@@ -14,20 +14,26 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
-class PythonTask extends DefaultTask {
+import java.nio.file.Path
 
-    private static final def Log = Logging.getLogger(PythonTask)
+class JavaTask extends DefaultTask {
 
-    @InputFiles
-    final ConfigurableFileCollection sourceFiles = project.files()
+    private static final def Log = Logging.getLogger(JavaTask)
+
+    @Input
+    @Optional
+    final Property<Boolean> tie = project.objects.property(Boolean)
+
+    @Input
+    @Optional
+    final Property<Boolean> impl = project.objects.property(Boolean)
 
     @InputFiles
     @Optional
     final ConfigurableFileCollection includeDirs = project.files()
 
-    @Input
-    @Optional
-    final Property<String> prefix = project.objects.property(String)
+    @InputFiles
+    final ConfigurableFileCollection sourceFiles = project.files()
 
     @OutputDirectory
     final DirectoryProperty outputDir = project.objects.directoryProperty()
@@ -38,9 +44,7 @@ class PythonTask extends DefaultTask {
     @TaskAction
     void action(IncrementalTaskInputs inputs) {
         if (!inputs.incremental) {
-            sourceFiles.files.each { file ->
-                deleteOutputFile(file)
-            }
+            project.delete(outputDir.asFile.get().listFiles())
         }
 
         List<String> filesForProcessing = []
@@ -55,19 +59,22 @@ class PythonTask extends DefaultTask {
         }
 
         if (!filesForProcessing.isEmpty()) {
-            List<String> cmd = ["slice2py", "-I" + sliceExt.sliceDir]
+            List<String> cmd = ["slice2java", "-I" + sliceExt.sliceDir]
 
             if (!includeDirs.isEmpty()) {
                 // Add any additional includes
-                includeDirs.files.each { dir -> cmd.add("-I" + dir) }
+                includeDirs.files.each { File dir -> cmd.add("-I" + dir) }
             }
 
             // Add files for processing
             cmd.addAll(filesForProcessing)
 
-            if (prefix.isPresent()) {
-                // Set a prefix
-                cmd.add("--prefix=" + prefix.get())
+            if (tie.getOrElse(false)) {
+                cmd.add("--tie")
+            }
+
+            if (impl.getOrElse(false)) {
+                cmd.add("--impl")
             }
 
             // Set the output directory
@@ -82,50 +89,19 @@ class PythonTask extends DefaultTask {
         }
     }
 
-    void outputDir(String dir) {
-        setOutputDir(dir)
-    }
-
-    void outputDir(File dir) {
-        setOutputDir(dir)
-    }
-
-    void setOutputDir(String dir) {
-        setOutputDir(project.file(dir))
-    }
-
-    void setOutputDir(File dir) {
-        outputDir.set(dir)
-    }
-
-    void prefix(String text) {
-        setPrefix(text)
-    }
-
-    void setPrefix(String text) {
-        prefix.set(text)
-    }
-
     void deleteOutputFile(File file) {
+        Path resolvedPath = outputDir.get().asFile.toPath().resolve(file.toPath())
+        File resolvedFile = resolvedPath.toFile()
+
         // Convert the input filename to the output filename and
         // delete that file
-        File targetFile = project.file("$outputDir/${getOutputFileName(file)}")
+        File targetFile = new File(resolvedFile.path, FilenameUtils.getBaseName(resolvedFile.name) + ".java")
         if (targetFile.exists()) {
             targetFile.delete()
         }
     }
 
-    String getOutputFileName(File file) {
-        String temp = file.name
-        String extension = FilenameUtils.getExtension(temp)
-        String filename = FilenameUtils.getBaseName(temp)
-        if (prefix.isPresent()) {
-            filename = prefix.get() + filename + "_ice"
-        }
-        return "${filename}.{$extension}"
-    }
-
-    void executeCommand(List cmd) {
+    private void executeCommand(List cmd) {
         StringBuffer sout = new StringBuffer()
         Process p = cmd.execute()
         p.waitForProcessOutput(sout, System.err)
@@ -133,4 +109,5 @@ class PythonTask extends DefaultTask {
             throw new GradleException("${cmd[0]} failed with exit code: ${p.exitValue()}")
         }
     }
+
 }
