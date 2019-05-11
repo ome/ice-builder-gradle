@@ -1,19 +1,22 @@
 package com.zeroc.gradle.icebuilder.slice
 
-
-import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileTree
 import org.gradle.api.logging.Logging
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
-class JavaTask extends DefaultTask {
+class JavaTask extends SourceTask {
 
     private static final def Log = Logging.getLogger(JavaTask)
 
@@ -25,12 +28,9 @@ class JavaTask extends DefaultTask {
     @Optional
     final Property<Boolean> impl = project.objects.property(Boolean)
 
-    @Input
-    @Optional
-    final ConfigurableFileCollection includeDirs = project.files()
-
     @InputFiles
-    final ConfigurableFileCollection sourceFiles = project.files()
+    @Optional
+    final ListProperty<Directory> includeDirs = project.objects.listProperty(Directory)
 
     @OutputDirectory
     final DirectoryProperty outputDir = project.objects.directoryProperty()
@@ -38,20 +38,24 @@ class JavaTask extends DefaultTask {
     // Change this to a configuration
     SliceExtension sliceExt = project.slice
 
+    JavaTask() {
+        super()
+        setIncludes(["**/*.ice"])
+    }
+
     @TaskAction
     void action() {
         List<String> cmd = [sliceExt.slice2java, "-I" + sliceExt.sliceDir]
 
-        if (!includeDirs.isEmpty()) {
+        List<Directory> incDirs = includeDirs.getOrNull()
+        if (incDirs) {
             // Add any additional includes
-            includeDirs.files.each { File file ->
-                if (file.isDirectory()) {
-                    cmd.add("-I" + file)
-                }
+            incDirs.each { Directory dir ->
+                cmd.add("-I" + dir.asFile)
             }
         }
 
-        sourceFiles.files.each { File file ->
+        source.files.each { File file ->
             cmd.add(String.valueOf(file))
         }
 
@@ -65,6 +69,12 @@ class JavaTask extends DefaultTask {
 
         cmd.add("--output-dir=" + outputDir.asFile.get())
         executeCommand(cmd)
+    }
+
+    @Override
+    @PathSensitive(PathSensitivity.RELATIVE)
+    FileTree getSource() {
+        super.getSource()
     }
 
     private void executeCommand(List<String> cmd) {

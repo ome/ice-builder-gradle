@@ -121,24 +121,21 @@ class SliceExtension {
                 //
                 // Guess the slice and jar directories of the Ice distribution we are using
                 //
-                def sliceDirectories = [
-                    [_iceHome, "share", "slice"],                         // Common shared slice directory
-                    [_iceHome, "share", "ice", "slice"],                  // Ice >= 3.7
-                    [_iceHome, "share", "Ice-${_iceVersion}", "slice"],   // Ice < 3.7
-                    [_iceHome, "slice"]                                   // Opt/source installs & Windows distribution
+                List<Path> sliceDirectories = [
+                    Paths.get(_iceHome, "share", "slice"),                         // Common shared slice directory
+                    Paths.get(_iceHome, "share", "ice", "slice"),                  // Ice >= 3.7
+                    Paths.get(_iceHome, "share", "Ice-${_iceVersion}", "slice"),   // Ice < 3.7
+                    Paths.get(_iceHome, "slice")                                   // Opt/source installs & Windows distribution
                 ]
 
-                def jarDirectories = [
-                    [_iceHome, "share", "java"],                          // Default usr install
-                    [_iceHome, _compat ? "java-compat" : "java", "lib"],  // Source distribution
-                    [_iceHome, "lib"]                                     // Opt style install & Windows distribution
+                List<Path> jarDirectories = [
+                    Paths.get(_iceHome, "share", "java"),                          // Default usr install
+                    Paths.get(_iceHome, _compat ? "java-compat" : "java", "lib"),  // Source distribution
+                    Paths.get(_iceHome, "lib")                                     // Opt style install & Windows distribution
                 ]
 
-                def sliceDirCandidates = sliceDirectories.collect { it.join(File.separator) }
-                def jarDirCandidates = jarDirectories.collect { it.join(File.separator) }
-
-                _sliceDir = sliceDirCandidates.find { new File(it).exists() }
-                _jarDir = jarDirCandidates.find { new File(it).exists() }
+                _sliceDir = sliceDirectories.find { Files.exists(it) }.toString()
+                _jarDir = jarDirectories.find { Files.exists(it) }.toString()
 
                 if (!_sliceDir) {
                     LOGGER.warn("Unable to locate slice directory in iceHome (${iceHome})")

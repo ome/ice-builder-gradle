@@ -1,16 +1,20 @@
 package com.zeroc.gradle.icebuilder.slice
 
-import org.gradle.api.DefaultTask
+
 import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
+import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
-class DocsTask extends DefaultTask {
+class DocsTask extends SourceTask {
+
+    private static final def Log = Logging.getLogger(DocsTask)
 
     @Input
     @Optional
@@ -51,21 +55,27 @@ class DocsTask extends DefaultTask {
     @Optional
     FileCollection includeDirs
 
-    @InputFiles
-    FileCollection sourceFiles
-
     // Change this to a configuration
     SliceExtension sliceExt = project.slice
 
+    DocsTask() {
+        super()
+        setIncludes(["**/*.ice"])
+    }
+
     @TaskAction
     void apply() {
-        List<String> cmd = ["slice2html", "-I${sliceExt.sliceDir}"]
+        List<String> cmd = ["slice2html", "-I" + sliceExt.sliceDir]
 
         cmd.addAll(["--output-dir", String.valueOf(outputDir)])
 
         if (includeDirs) {
             // Add any additional includes
-            includeDirs.each { dir -> cmd.add("-I${dir}") }
+            includeDirs.files.each { File file ->
+                if (file.isDirectory()) {
+                    cmd.add("-I" + file)
+                }
+            }
         }
 
         if (header) {
@@ -85,7 +95,7 @@ class DocsTask extends DefaultTask {
         }
 
         // Add the source files
-        sourceFiles.files.each {
+        source.files.each {
             cmd.add(String.valueOf(it))
         }
 
