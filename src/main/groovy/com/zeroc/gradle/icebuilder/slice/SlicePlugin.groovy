@@ -15,8 +15,10 @@ class SlicePlugin implements Plugin<Project> {
 
     public static final String GROUP_SLICE = "slice"
 
+    public static final String TASK_COMPILE_SLICE = "compileSlice"
+
     void apply(Project project) {
-        project.tasks.create('compileSlice', SliceTask) {
+        project.tasks.register(TASK_COMPILE_SLICE, SliceTask) {
             group = GROUP_SLICE
         }
 
@@ -33,7 +35,7 @@ class SlicePlugin implements Plugin<Project> {
         // Configure docs tasks
 //        slice.docs.configureEach { Docs docs ->
 //            String taskName = "ice" + docs.name.capitalize() + "Docs"
-//            project.tasks.register(taskName, DocsTask) {
+//            project.tasks.register(taskName, IceDocsTask) {
 //                it.group = GROUP_SLICE
 //                it.outputDir = docs.outputDir
 //                it.includeDirs = docs.includeDirs

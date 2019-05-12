@@ -1,5 +1,6 @@
-package com.zeroc.gradle.icebuilder.slice
+package org.openmicroscopy.tasks
 
+import com.zeroc.gradle.icebuilder.slice.SliceExtension
 import org.apache.commons.io.FilenameUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -14,9 +15,9 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
-class PythonTask extends DefaultTask {
+class IcePythonTask extends DefaultTask {
 
-    private static final def Log = Logging.getLogger(PythonTask)
+    private static final def Log = Logging.getLogger(IcePythonTask)
 
     @InputFiles
     final ConfigurableFileCollection sourceFiles = project.files()
