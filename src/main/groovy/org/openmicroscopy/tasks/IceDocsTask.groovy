@@ -22,11 +22,11 @@ class IceDocsTask extends SourceTask {
 
     @Input
     @Optional
-    final Property<Boolean> underscore  = project.objects.property(Boolean)
+    final Property<Boolean> underscore = project.objects.property(Boolean)
 
     @Input
     @Optional
-    final Property<Boolean> debug  = project.objects.property(Boolean)
+    final Property<Boolean> debug = project.objects.property(Boolean)
 
     @Input
     @Optional
@@ -73,12 +73,11 @@ class IceDocsTask extends SourceTask {
 
         cmd.addAll(["--output-dir", String.valueOf(outputDir.asFile.get())])
 
-        if (includeDirs) {
+        List<Directory> includeDirsList = includeDirs.getOrNull()
+        if (includeDirsList) {
             // Add any additional includes
-            includeDirs.files.each { File file ->
-                if (file.isDirectory()) {
-                    cmd.add("-I" + file)
-                }
+            includeDirsList.each { Directory dir ->
+                cmd.add("-I" + dir.asFile)
             }
         }
 
