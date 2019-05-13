@@ -6,6 +6,9 @@ plugins {
     id "org.openmicroscopy.plugin-project" version "5.5.0-SNAPSHOT"
 }
 
+version  = "1.5.0-SNAPSHOT"
+group = "org.openmicroscopy.gradle.ice-builder"
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -21,9 +24,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.github.stefanbirkner:system-rules:1.16.0'
 }
-
-version  = "1.5.0-SNAPSHOT"
-group = "org.openmicroscopy.gradle.ice-builder"
 
 gradlePlugin {
     plugins {
