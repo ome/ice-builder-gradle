@@ -29,8 +29,7 @@ class SlicePlugin implements Plugin<Project> {
 
         // Create and install the extension object.
         SliceExtension slice =
-                project.extensions.create("slice", SliceExtension, project.container(Java),
-                        project.container(Python, { name -> new Python(name, project) }))
+                project.extensions.create("slice", SliceExtension, project.container(Java))
 
         slice.extensions.create("freezej", Freezej,
                 project.container(Dict), project.container(Index))
