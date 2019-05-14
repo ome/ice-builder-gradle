@@ -102,7 +102,7 @@ class IceDocsTask extends SourceTask {
             cmd.add(String.valueOf(it))
         }
 
-        if (debug) {
+        if (debug.getOrElse(false)) {
             cmd.add("-d")
         }
 
