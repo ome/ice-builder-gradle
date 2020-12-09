@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/zeroc-ice/ice-builder-gradle.svg)](https://travis-ci.org/zeroc-ice/ice-builder-gradle)
+[![Actions Status](https://github.com/ome/ice-builder-gradle/workflows/Gradle/badge.svg)](https://github.com/ome/ice-builder-gradle/actions)
 
 # Ice Builder for Gradle
 
