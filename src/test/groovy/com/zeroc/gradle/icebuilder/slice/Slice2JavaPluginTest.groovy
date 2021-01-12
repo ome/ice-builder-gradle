@@ -20,7 +20,7 @@ class Slice2JavaPluginTest extends TestCase {
 
         writeTestSliceToFile(pathToFile([project.rootDir, 'src', 'main', 'slice', 'Test.ice']))
 
-        project.tasks.compileSlice.execute()
+        project.tasks.compileSlice.action()
 
         assertTrue(pathToFile([project.rootDir, 'build', 'generated-src', 'Test']).exists())
         assertTrue(pathToFile([project.rootDir, 'build', 'generated-src', 'Test', 'Hello.java']).exists())
@@ -37,7 +37,7 @@ class Slice2JavaPluginTest extends TestCase {
 
         writeTestSliceToFile(pathToFile([project.rootDir, 'src', 'other', 'slice', 'Test.ice']))
 
-        project.tasks.compileSlice.execute()
+        project.tasks.compileSlice.action()
 
         assertTrue(pathToFile([project.rootDir, 'build', 'generated-src', 'Test']).exists())
         assertTrue(pathToFile([project.rootDir, 'build', 'generated-src', 'Test', 'Hello.java']).exists())
@@ -50,21 +50,22 @@ class Slice2JavaPluginTest extends TestCase {
 
         writeTestSliceToFile(pathToFile([project.rootDir, 'src', 'main', 'slice', 'Test.ice']))
 
-        project.tasks.compileSlice.execute()
+        project.tasks.compileSlice.action()
 
-        def geneatedHello = pathToFile([project.rootDir, 'build', 'generated-src', 'Test', 'Hello.java'])
+        print(project.rootDir)
+        def generatedHello = pathToFile([project.rootDir, 'build', 'generated-src', 'Test', 'Hello.java'])
 
-        assertTrue(geneatedHello.exists())
-        geneatedHello.delete()
-        assertTrue(!geneatedHello.exists())
+        assertTrue(generatedHello.exists())
+        generatedHello.delete()
+        assertTrue(!generatedHello.exists())
 
         // Project tasks should not be re-executed and we are not using a tool like
         // GradleConnector/GradleRunner. So instead we make a new project and run it.
         def p = newProjectWithProjectDir()
         p.pluginManager.apply 'java'
         p.pluginManager.apply 'slice'
-        p.tasks.compileSlice.execute()
-        assertTrue(geneatedHello.exists())
+        p.tasks.compileSlice.action()
+        assertTrue(generatedHello.exists())
     }
 
     private void writeTestSliceToFile(file) {
