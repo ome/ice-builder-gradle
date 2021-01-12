@@ -24,6 +24,17 @@ class SlicePluginPropertyTest extends TestCase {
     }
 
     @Test
+    public void testDetectIceHome() {
+        // This test only works if ICE_HOME is set
+        assumeTrue(System.getenv()['ICE_HOME'] != null)
+        assertTrue(project.slice.iceHome != "")
+        assertTrue(project.slice.srcDist == false)
+        assertTrue(project.slice.iceVersion != "" && project.slice.iceVersion != null)
+        assertTrue(new File(project.slice.slice2java).exists())
+        assertTrue(new File(project.slice.sliceDir).exists())
+    }
+
+    @Test
     public void testAutoDetectIceHome() {
         // This test only works if ICE_HOME is not set
         assumeTrue(System.getenv()['ICE_HOME'] == null)
