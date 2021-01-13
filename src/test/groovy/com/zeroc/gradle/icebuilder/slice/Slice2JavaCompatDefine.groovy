@@ -24,10 +24,9 @@ class Slice2JavaCompatDefine extends TestCase {
     public void testSlice2JavaCompatDefine() {
         // Where builder checks for slice files by default
         pathToFile([project.rootDir, 'src', 'main', 'slice']).mkdirs()
-
         writeTestSliceToFile(pathToFile([project.rootDir, 'src', 'main', 'slice', 'Test.ice']))
 
-        project.tasks.compileSlice.execute()
+        project.tasks.compileSlice.action()
 
         assertTrue(pathToFile([project.rootDir,
                                'build',
