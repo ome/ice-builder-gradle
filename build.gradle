@@ -7,8 +7,8 @@
 buildscript {
     repositories {
         mavenLocal()
-        gradlePluginPortal()
         maven { url 'https://artifacts.openmicroscopy.org/artifactory/maven' }
+        mavenCentral()
     }
     dependencies {
         classpath('org.openmicroscopy:omero-artifact-plugin:5.5.0-m4')
