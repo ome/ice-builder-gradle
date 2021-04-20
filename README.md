@@ -34,7 +34,7 @@ An [Ice][4] installation with `slice2java` version 3.5.1 or higher is required.
 To build the `slice` plug-in run:
 
 ```shell
-./gradlew build
+gradle build
 ```
 
 ## Using the slice Plug-in
