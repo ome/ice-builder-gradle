@@ -1,4 +1,9 @@
-1.5.1 (March 2021)
+1.5.2 (April 2021)
+------------------
+
+- Bump omero-artifact-plugin to 5.5.2
+
+1.5.1 (April 2021)
 ------------------
 
 - Make build gradle 6 compatible.
