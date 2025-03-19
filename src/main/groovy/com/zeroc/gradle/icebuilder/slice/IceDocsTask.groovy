@@ -14,7 +14,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
-class IceDocsTask extends DefaultTask {
+class IceDocsTask extends DefaultTask implements Serializable {
 
     private static final def Log = Logging.getLogger(IceDocsTask)
 
