@@ -1,3 +1,9 @@
+1.5.7 (March 2025)
+------------------
+
+- Replace input by internal ([#23](https://github.com/ome/ice-builder-gradle/pull/23))
+
+
 1.5.6 (March 2025)
 ------------------
 
