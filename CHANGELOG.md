@@ -1,3 +1,9 @@
+1.5.5 (March 2025)
+------------------
+
+- Make class serializable ([#21](https://github.com/ome/ice-builder-gradle/pull/21))
+
+
 1.5.4 (March 2025)
 ------------------
 
