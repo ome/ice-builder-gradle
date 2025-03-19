@@ -45,7 +45,7 @@ sourceSets {
     }
 }
 
-version  = "1.5.7"
+version  = "1.5.8-SNAPSHOT"
 group = "org.openmicroscopy.gradle.ice-builder"
 
 gradlePlugin {
