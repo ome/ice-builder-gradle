@@ -12,7 +12,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
-class PythonTask extends DefaultTask {
+class PythonTask extends DefaultTask implements Serializable {
 
     private static final def Log = Logging.getLogger(PythonTask)
 
