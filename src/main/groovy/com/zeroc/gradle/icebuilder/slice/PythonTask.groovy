@@ -31,7 +31,6 @@ class PythonTask extends DefaultTask implements Serializable {
     FileCollection includeDirs
 
     // Change this to a configuration
-    @Input
     SliceExtension sliceExt = project.slice
 
     @TaskAction
