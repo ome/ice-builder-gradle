@@ -66,7 +66,7 @@ class IceDocsTask extends DefaultTask implements Serializable {
     final RegularFileProperty src = project.objects.fileProperty()
 
     // Change this to a configuration
-    @Input
+    @Internal
     SliceExtension sliceExt = project.slice
 
     @TaskAction
