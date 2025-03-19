@@ -7,6 +7,7 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -31,7 +32,7 @@ class PythonTask extends DefaultTask implements Serializable {
     FileCollection includeDirs
 
     // Change this to a configuration
-    @Input
+    @Internal
     SliceExtension sliceExt = project.slice
 
     @TaskAction
