@@ -10,7 +10,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.logging.Logging
 import org.gradle.api.NamedDomainObjectContainer
 
-class SliceExtension implements Serializable {
+class SliceExtension {
 
     final NamedDomainObjectContainer<Java> java
 
