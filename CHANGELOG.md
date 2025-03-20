@@ -1,3 +1,9 @@
+1.5.8 (March 2025)
+------------------
+
+- Roll back change and do not use varialbe ([#24](https://github.com/ome/ice-builder-gradle/pull/24))
+
+
 1.5.7 (March 2025)
 ------------------
 
