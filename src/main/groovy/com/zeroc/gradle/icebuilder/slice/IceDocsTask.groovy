@@ -10,12 +10,11 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
-class IceDocsTask extends DefaultTask implements Serializable {
+class IceDocsTask extends DefaultTask {
 
     private static final def Log = Logging.getLogger(IceDocsTask)
 
@@ -66,15 +65,11 @@ class IceDocsTask extends DefaultTask implements Serializable {
     @Optional
     final RegularFileProperty src = project.objects.fileProperty()
 
-    // Change this to a configuration
-    @Internal
-    SliceExtension sliceExt = project.slice
-
     @TaskAction
     void apply() {
         List<String> cmd = ["slice2html"]
 
-        cmd.addAll(["-I", sliceExt.sliceDir])
+        cmd.addAll(["-I", project.slice.sliceDir])
 
         if (includeDirs) {
             // Add any additional includes

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import groovy.util.XmlSlurper
 import groovy.xml.MarkupBuilder
 
-class SliceTask extends DefaultTask implements Serializable {
+class SliceTask extends DefaultTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(SliceTask)
 
     SliceTask() {
