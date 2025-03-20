@@ -7,7 +7,6 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -31,10 +30,6 @@ class PythonTask extends DefaultTask implements Serializable {
     @Optional
     FileCollection includeDirs
 
-    // Change this to a configuration
-    @Internal
-    SliceExtension sliceExt = project.slice
-
     @TaskAction
     void action(IncrementalTaskInputs inputs) {
         if (!inputs.incremental) {
@@ -55,7 +50,7 @@ class PythonTask extends DefaultTask implements Serializable {
         }
 
         if (!filesForProcessing.isEmpty()) {
-            List cmd = [sliceExt.slice2py, "-I${sliceExt.sliceDir}"]
+            List cmd = [project.slice.slice2py, "-I${project.slice.sliceDir}"]
 
             if (includeDirs) {
                 // Add any additional includes
